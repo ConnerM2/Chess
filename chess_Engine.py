@@ -3,14 +3,14 @@
 class GameState():
     def __init__(self):
         self.board = [
-                ['bR', 'bK', 'bB', 'bK', 'BQ', 'bB', 'bK', 'bR'],
+                ['bR', 'bN', 'bB', 'bK', 'BQ', 'bB', 'bN', 'bR'],
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
-                ['wR', 'wK', 'wB', 'wK', 'wQ', 'wB', 'wK', 'wR']]
+                ['wR', 'wN', 'wB', 'wK', 'wQ', 'wB', 'wN', 'wR']]
         
         self.whiteToMove = True
         self.moveHistory = []

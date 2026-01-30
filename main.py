@@ -15,7 +15,7 @@ gs = GameState()
 
 def load_images():
     #makes a list of all the possible chess peices
-    peices = ['bR', 'bK', 'bB', 'bK', 'BQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wK', 'wQ']
+    peices = ['bR', 'bN', 'bB', 'bK', 'BQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wN', 'wQ']
     #loops through each peice in the list and gets the path of the images that corrispons to the peice
     for peice in peices:
         path = os.path.join(BASE_DIRECTORY, 'images', peice + '.png')#Joins the base directory with images directory. Then for each peice gets a .png attach.
