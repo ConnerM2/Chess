@@ -12,7 +12,6 @@ BROWN = (184, 135, 98)
 print(f"This is abls path {os.path.abspath(__file__)}")
 print(f"This is the base directory {BASE_DIRECTORY}")
 gs = GameState()
-
 def load_images():
     #makes a list of all the possible chess peices
     peices = ['bR', 'bN', 'bB', 'bK', 'BQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wN', 'wQ']
@@ -24,6 +23,9 @@ def load_images():
         #this assigns an images to each peice
         IMAGES[peice] = p.transform.scale(p.image.load(path), (SQUARE_SIZE, SQUARE_SIZE))
 
+
+
+
 def main():
     p.init()
     load_images()
@@ -31,6 +33,11 @@ def main():
     screen = p.display.set_mode((WIDTH, HEIGHT)) #
     running = True
     moves = []
+    moveMade = False
+    legal_moves = gs.all_moves()
+    for move in legal_moves:
+        print(move)
+
     while running:
 
         for event in p.event.get():
@@ -40,20 +47,28 @@ def main():
             elif event.type == p.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     position = event.pos #Gets position of mouse once clicked, store in position as a tuple
-                    column = position[0] // SQUARE_SIZE #pos[0] = x pos[1] = y; divide each by 64 to get row/column of mouse click
                     row = position[1] // SQUARE_SIZE
+                    column = position[0] // SQUARE_SIZE #pos[0] = x pos[1] = y; divide each by 64 to get row/column of mouse click
                     move = (row, column) #store move in tuple
                     moves.append(move) 
                     
                     if len(moves) == 2: #waits till two moves are made
                         if move == moves[0]: #if click came square, nothing happens
                             moves = []
-                            print("Same square")
+                            #print("Same square")
                         else:
-                            print(f"Row: {row} Column: {column} Move: {moves}")
+                            #print(f"Row: {row} Column: {column} Move: {moves}")
                             move = Move(moves[0], moves[1], gs.board) #sends the two squares clicked to backend
-                            gs.makeMove(move)
+                            if move in legal_moves:
+                                gs.makeMove(move)
+                                moveMade = True
                             moves = []
+
+        if moveMade:
+            legal_moves = gs.all_moves()
+            for move in legal_moves:
+                print(move)
+            moveMade = False
                     
 
         p.display.update()
