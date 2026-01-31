@@ -77,6 +77,7 @@ class GameState():
         return []
     def gen_queen_moves(self, row, col):
         return []
+    
 
 
 
