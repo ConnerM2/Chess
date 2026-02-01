@@ -64,7 +64,7 @@ class GameState():
             direction = 1
             enemy = 'w'
             start_row = 1
-            
+
         #capture
         for capture in (-1, 1):
             r = row + direction
@@ -133,18 +133,41 @@ class GameState():
     
     def gen_rook_moves(self, row, col):
         moves = []
-        currentRow = row
-        currentCol = col
-        while currentRow >= 0:
-            currentRow -= 1
-            currentCol = currentCol
-            if self.board[currentRow][currentCol] == '--':
-                moves.append(Move((row, col), (currentRow, currentCol), self.board))
-            elif self.board[currentRow][currentCol][0] == 'b':
-                moves.append(Move((row, col), (currentRow, currentCol), self.board))
-                return moves
-            else:
-                return moves
+        peice_color = self.board[row][col][0]
+
+        if peice_color == 'w':
+            enemy = 'b'
+            forward = -1
+        else:
+            enemy = 'w'
+            forward = 1
+
+        for direction in (-1, 1):
+            currentRow = row
+            currentCol = col
+            while 0 <= currentRow + forward * direction < 8:
+                currentRow += forward * direction
+                if self.board[currentRow][currentCol] == '--':
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                elif self.board[currentRow][currentCol][0] == enemy:
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                    break
+                else:
+                    break
+            #think of it like a pawn move and loop until you are either ontop of a enemy or freindly
+            #while in bounds, if move == -- append it, if move == enenmy append then break, if move == freindly break
+        for direction in (-1, 1):
+            currentRow = row
+            currentCol = col
+            while 0 <= currentCol + 1 * direction < 8:
+                currentCol += 1 * direction
+                if self.board[currentRow][currentCol] == '--':
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                elif self.board[currentRow][currentCol][0] == enemy:
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                    break
+                else:
+                    break 
         return moves
     
     def gen_knight_moves(self, row, col):
