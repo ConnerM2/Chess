@@ -13,7 +13,7 @@ BROWN = (184, 135, 98)
 # print(f"This is the base directory {BASE_DIRECTORY}")
 def load_images():
     #makes a list of all the possible chess peices
-    peices = ['bR', 'bN', 'bB', 'bK', 'BQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wN', 'wQ']
+    peices = ['bR', 'bN', 'bB', 'bK', 'bQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wN', 'wQ']
     #loops through each peice in the list and gets the path of the images that corrispons to the peice
     for peice in peices:
         path = os.path.join(BASE_DIRECTORY, 'images', peice + '.png')#Joins the base directory with images directory. Then for each peice gets a .png attach.
@@ -40,7 +40,6 @@ def main():
         print(move)
 
     while running:
-
         for event in p.event.get():
             if event.type == p.QUIT:
                 p.quit()
@@ -53,10 +52,10 @@ def main():
                                                         #row/column of mouse click
 
                     sqSelected = (row, column) #store move in tuple
+                    print(sqSelected)
                     moves.append(sqSelected) 
-                    
                     if len(moves) == 2: #waits till two moves are made
-                        if move == moves[0]: #if click came square, nothing happens
+                        if sqSelected == moves[0]: #if click came square, nothing happens
                             moves = []
                             sqSelected = ()
                         else:
@@ -66,7 +65,6 @@ def main():
                                 moveMade = True
                             moves = []
                             sqSelected = ()
-
         if moveMade:
             legal_moves = gs.all_moves()
             for move in legal_moves:
@@ -79,7 +77,9 @@ def main():
         p.display.flip()
 
 
+'''
 
+'''
 def game_start(screen, gs):
     draw_board(screen)
     draw_peices(screen, gs.board)

@@ -3,7 +3,7 @@
 class GameState():
     def __init__(self):
         self.board = [
-                ['bR', 'bN', 'bB', 'bK', 'BQ', 'bB', 'bN', 'bR'],
+                ['bR', 'bN', 'bB', 'bK', 'bQ', 'bB', 'bN', 'bR'],
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
@@ -54,21 +54,65 @@ class GameState():
     def gen_pawn_moves(self, row, col):
         moves = []
         if self.board[row][col][0] == 'w':
-            if row == 6:
-                moves.append(Move((row,col), (row-1,col), self.board))
-                moves.append(Move((row,col), (row-2,col), self.board))
-            else:
-                moves.append(Move((row,col), (row-1,col), self.board))
+            if col > 0 and col < 7:
+                if self.board[row-1][col-1][0] == 'b':
+                    moves.append(Move((row,col), (row-1,col-1), self.board))
+                if self.board[row-1][col+1][0] == 'b':
+                    moves.append(Move((row,col), (row-1,col+1), self.board))
+            elif col == 0:
+                if self.board[row-1][col+1][0] == 'b':
+                    moves.append(Move((row,col), (row-1,col+1), self.board))
+            elif col == 7:
+                if self.board[row-1][col-1][0] == 'b':
+                    moves.append(Move((row,col), (row-1,col-1), self.board))
+            if self.board[row-1][col] == '--':
+                if row == 6:
+                    if self.board[row-2][col] == '--':
+                        moves.append(Move((row,col), (row-1,col), self.board))
+                        moves.append(Move((row,col), (row-2,col), self.board))
+                    elif self.board[row-1][col] == '--':
+                        moves.append(Move((row,col), (row-1,col), self.board))
+                else:
+                    moves.append(Move((row,col), (row-1,col), self.board))
         elif self.board[row][col][0] == 'b':
-            if row == 1:
-                moves.append(Move((row,col), (row+1,col), self.board))
-                moves.append(Move((row,col), (row+2,col), self.board))
-            else:
-                moves.append(Move((row,col), (row+1,col), self.board))
+            if col > 0 and col < 7:
+                if self.board[row+1][col-1][0] == 'w':
+                    moves.append(Move((row,col), (row+1,col-1), self.board))
+                if self.board[row+1][col+1][0] == 'w':
+                    moves.append(Move((row,col), (row+1,col+1), self.board))
+            elif col == 0:
+                if self.board[row+1][col+1][0] == 'w':
+                    moves.append(Move((row,col), (row+1,col+1), self.board))
+            elif col == 7:
+                if self.board[row+1][col-1][0] == 'w':
+                    moves.append(Move((row,col), (row+1,col-1), self.board))
+            if self.board[row+1][col] == '--':
+                if row == 1:
+                    if self.board[row+2][col] == '--':
+                        moves.append(Move((row,col), (row+1,col), self.board))
+                        moves.append(Move((row,col), (row+2,col), self.board))
+                    elif self.board[row+1][col] == '--':
+                        moves.append(Move((row,col), (row+1,col), self.board))
+                else:
+                    moves.append(Move((row,col), (row+1,col), self.board))
         return moves
     
     def gen_rook_moves(self, row, col):
-        return []
+        moves = []
+        currentRow = row
+        currentCol = col
+        while currentRow >= 0:
+            currentRow -= 1
+            currentCol = currentCol
+            if self.board[currentRow][currentCol] == '--':
+                moves.append(Move((row, col), (currentRow, currentCol), self.board))
+            elif self.board[currentRow][currentCol][0] == 'b':
+                moves.append(Move((row, col), (currentRow, currentCol), self.board))
+                return moves
+            else:
+                return moves
+        return moves
+    
     def gen_knight_moves(self, row, col):
         return []
     def gen_bishop_moves(self, row, col):
