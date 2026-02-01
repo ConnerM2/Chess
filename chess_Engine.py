@@ -53,6 +53,40 @@ class GameState():
 
     def gen_pawn_moves(self, row, col):
         moves = []
+        peice_color = self.board[row][col][0]
+
+        if peice_color == 'w':
+            direction = -1
+            enemy = 'b'
+            start_row = 6
+
+        else:
+            direction = 1
+            enemy = 'w'
+            start_row = 1
+            
+        #capture
+        for capture in (-1, 1):
+            r = row + direction
+            c = col + capture
+            if 0 <= r < 8 and 0 <= c < 8:
+                if self.board[r][c][0] == enemy:
+                    moves.append(Move((row, col), (r, c), self.board))
+
+        #move forward
+        oneforward = row + direction
+        if 0 <= oneforward < 8 and self.board[oneforward][col] == '--':
+            moves.append(Move((row, col), (oneforward, col), self.board))
+
+            #move 2 forward if on starting row
+            twoforward = row + direction * 2
+            if 0 <= twoforward < 8 and row == start_row and self.board[twoforward][col] == '--':
+                moves.append(Move((row, col), (twoforward, col), self.board))
+
+        return moves
+
+
+
         if self.board[row][col][0] == 'w':
             if col > 0 and col < 7:
                 if self.board[row-1][col-1][0] == 'b':
