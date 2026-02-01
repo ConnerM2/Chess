@@ -9,6 +9,7 @@ BASE_DIRECTORY = os.path.dirname(os.path.abspath(__file__)) #get complete path f
 IMAGES = {}
 WHITE = (237, 214, 176)
 BROWN = (184, 135, 98)
+YELLO = (255,255,0)
 # print(f"This is abls path {os.path.abspath(__file__)}")
 # print(f"This is the base directory {BASE_DIRECTORY}")
 def load_images():
@@ -72,7 +73,7 @@ def main():
             moveMade = False
                     
 
-        game_start(screen, gs)
+        game_start(screen, gs, sqSelected)
         clock.tick(16)
         p.display.flip()
 
@@ -80,18 +81,21 @@ def main():
 '''
 
 '''
-def game_start(screen, gs):
-    draw_board(screen)
+def game_start(screen, gs, square):
+    draw_board(screen, square)
     draw_peices(screen, gs.board)
 
-def draw_board(screen):
+def draw_board(screen, square):
     for row in range(DIMENSIONS):
         for column in range(DIMENSIONS): #8x8 loop to draw all 64 square
-            if (row + column) % 2 == 0: 
+            if (row, column) == square:
+                color = YELLO
+                print((row,column), square)
+            elif (row + column) % 2 == 0: 
                 color = WHITE
             else:
                 color = BROWN
-            p.draw.rect(screen, color, p.Rect(row * SQUARE_SIZE, column * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            p.draw.rect(screen, color, p.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
             #draws rec on screen with color. Useing row and column loop, get cords for square: (0,0), (0,64), (0,128)
 
 def draw_peices(screen, board):
