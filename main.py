@@ -11,6 +11,12 @@ WHITE = (237, 214, 176)
 BROWN = (184, 135, 98)
 # print(f"This is abls path {os.path.abspath(__file__)}")
 # print(f"This is the base directory {BASE_DIRECTORY}")
+
+
+
+'''
+load images add a name and image path to the images dic
+'''
 def load_images():
     #makes a list of all the possible chess peices
     peices = ['bR', 'bN', 'bB', 'bK', 'bQ', 'bp', 'wp', 'wR', 'wK', 'wB', 'wN', 'wQ']
