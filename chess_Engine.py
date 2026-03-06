@@ -7,7 +7,7 @@ class GameState():
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
-                ['--', '--', '--', 'wB', '--', '--', '--', '--'],
+                ['--', '--', '--', 'wQ', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
                 ['wR', 'wN', 'wB', 'wK', 'wQ', 'wB', 'wN', 'wR']]
@@ -94,16 +94,14 @@ class GameState():
 
         if peice_color == 'w':
             enemy = 'b'
-            forward = -1
         else:
             enemy = 'w'
-            forward = 1
 
         for direction in (-1, 1):
             currentRow = row
             currentCol = col
-            while 0 <= currentRow + forward * direction < 8:
-                currentRow += forward * direction
+            while 0 <= currentRow + 1 * direction < 8:
+                currentRow += 1 * direction
                 if self.board[currentRow][currentCol] == '--':
                     moves.append(Move((row,col), (currentRow, currentCol), self.board))
                 elif self.board[currentRow][currentCol][0] == enemy:
@@ -158,7 +156,55 @@ class GameState():
     def gen_king_moves(self, row, col):
         return []
     def gen_queen_moves(self, row, col):
-        return []
+        moves = []
+        peice_color = self.board[row][col][0]
+
+        if peice_color == 'w':
+            enemy = 'b'
+        else:
+            enemy = 'w'
+
+        for row_direction in (-1, 1):
+            for col_direction in (-1, 1):
+                currentRow = row
+                currentCol = col
+                while 0 <= currentRow + 1 * row_direction < 8 and 0 <= currentCol + 1 * col_direction < 8:
+                    currentRow += 1 * row_direction
+                    currentCol += 1 * col_direction
+                    if self.board[currentRow][currentCol] == '--':
+                        moves.append(Move((row, col), (currentRow, currentCol), self.board))
+                    elif self.board[currentRow][currentCol][0] == enemy:
+                        moves.append(Move((row, col), (currentRow, currentCol), self.board))
+                        break
+                    else:
+                        break 
+
+        for direction in (-1, 1):
+            currentRow = row
+            currentCol = col
+            while 0 <= currentRow + 1 * direction < 8:
+                currentRow += 1 * direction
+                if self.board[currentRow][currentCol] == '--':
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                elif self.board[currentRow][currentCol][0] == enemy:
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                    break
+                else:
+                    break
+
+        for direction in (-1, 1):
+            currentRow = row
+            currentCol = col
+            while 0 <= currentCol + 1 * direction < 8:
+                currentCol += 1 * direction
+                if self.board[currentRow][currentCol] == '--':
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                elif self.board[currentRow][currentCol][0] == enemy:
+                    moves.append(Move((row,col), (currentRow, currentCol), self.board))
+                    break
+                else:
+                    break 
+        return moves
     
 
 '''
