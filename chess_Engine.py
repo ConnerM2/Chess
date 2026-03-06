@@ -7,7 +7,7 @@ class GameState():
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
-                ['--', '--', '--', '--', '--', '--', '--', '--'],
+                ['--', '--', '--', 'wB', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
                 ['wR', 'wN', 'wB', 'wK', 'wQ', 'wB', 'wN', 'wR']]
@@ -72,6 +72,7 @@ class GameState():
             if 0 <= r < 8 and 0 <= c < 8:
                 if self.board[r][c][0] == enemy:
                     moves.append(Move((row, col), (r, c), self.board))
+                #check if diagnal square are en pasan
 
         #move forward
         oneforward = row + direction
@@ -82,54 +83,10 @@ class GameState():
             twoforward = row + direction * 2
             if 0 <= twoforward < 8 and row == start_row and self.board[twoforward][col] == '--':
                 moves.append(Move((row, col), (twoforward, col), self.board))
+                #declare that the square before is en pasan elegable
 
         return moves
 
-
-
-        if self.board[row][col][0] == 'w':
-            if col > 0 and col < 7:
-                if self.board[row-1][col-1][0] == 'b':
-                    moves.append(Move((row,col), (row-1,col-1), self.board))
-                if self.board[row-1][col+1][0] == 'b':
-                    moves.append(Move((row,col), (row-1,col+1), self.board))
-            elif col == 0:
-                if self.board[row-1][col+1][0] == 'b':
-                    moves.append(Move((row,col), (row-1,col+1), self.board))
-            elif col == 7:
-                if self.board[row-1][col-1][0] == 'b':
-                    moves.append(Move((row,col), (row-1,col-1), self.board))
-            if self.board[row-1][col] == '--':
-                if row == 6:
-                    if self.board[row-2][col] == '--':
-                        moves.append(Move((row,col), (row-1,col), self.board))
-                        moves.append(Move((row,col), (row-2,col), self.board))
-                    elif self.board[row-1][col] == '--':
-                        moves.append(Move((row,col), (row-1,col), self.board))
-                else:
-                    moves.append(Move((row,col), (row-1,col), self.board))
-        elif self.board[row][col][0] == 'b':
-            if col > 0 and col < 7:
-                if self.board[row+1][col-1][0] == 'w':
-                    moves.append(Move((row,col), (row+1,col-1), self.board))
-                if self.board[row+1][col+1][0] == 'w':
-                    moves.append(Move((row,col), (row+1,col+1), self.board))
-            elif col == 0:
-                if self.board[row+1][col+1][0] == 'w':
-                    moves.append(Move((row,col), (row+1,col+1), self.board))
-            elif col == 7:
-                if self.board[row+1][col-1][0] == 'w':
-                    moves.append(Move((row,col), (row+1,col-1), self.board))
-            if self.board[row+1][col] == '--':
-                if row == 1:
-                    if self.board[row+2][col] == '--':
-                        moves.append(Move((row,col), (row+1,col), self.board))
-                        moves.append(Move((row,col), (row+2,col), self.board))
-                    elif self.board[row+1][col] == '--':
-                        moves.append(Move((row,col), (row+1,col), self.board))
-                else:
-                    moves.append(Move((row,col), (row+1,col), self.board))
-        return moves
     
     def gen_rook_moves(self, row, col):
         moves = []
@@ -173,14 +130,31 @@ class GameState():
     def gen_knight_moves(self, row, col):
         return []
     def gen_bishop_moves(self, row, col):
-        return []
+        moves = []
+        peice_color = self.board[row][col][0]
+
+        if peice_color == 'w':
+            enemy = 'b'
+        else:
+            enemy = 'w'
+
+        for row_direction in (-1, 1):
+            for col_direction in (-1, 1):
+                currentRow = row
+                currentCol = col
+                while 0 <= currentRow + 1 * row_direction < 8 and 0 <= currentCol + 1 * col_direction < 8:
+                    currentRow += 1 * row_direction
+                    currentCol += 1 * col_direction
+                    if self.board[currentRow][currentCol] == '--':
+                        moves.append(Move((row, col), (currentRow, currentCol), self.board))
+
+        return moves
+
     def gen_king_moves(self, row, col):
         return []
     def gen_queen_moves(self, row, col):
         return []
     
-
-
 
 '''
 This class is used to store the two most reacent clicks
