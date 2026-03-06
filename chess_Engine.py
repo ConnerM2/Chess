@@ -124,7 +124,7 @@ class GameState():
                     moves.append(Move((row,col), (currentRow, currentCol), self.board))
                     break
                 else:
-                    break 
+                    break #This break is for if the peice is block by thier own color peices
         return moves
     
     def gen_knight_moves(self, row, col):
@@ -147,6 +147,11 @@ class GameState():
                     currentCol += 1 * col_direction
                     if self.board[currentRow][currentCol] == '--':
                         moves.append(Move((row, col), (currentRow, currentCol), self.board))
+                    elif self.board[currentRow][currentCol][0] == enemy:
+                        moves.append(Move((row, col), (currentRow, currentCol), self.board))
+                        break
+                    else:
+                        break #This break is for if the peice is block by thier own color peices
 
         return moves
 
