@@ -7,7 +7,7 @@ class GameState():
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
-                ['--', '--', '--', 'wK', '--', '--', '--', '--'],
+                ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
                 ['wR', 'wN', 'wB', 'wK', 'wQ', 'wB', 'wN', 'wR']]
@@ -126,7 +126,30 @@ class GameState():
         return moves
     
     def gen_knight_moves(self, row, col):
-        return []
+        moves = []
+        peice_color = self.board[row][col][0]
+
+        if peice_color == 'w':
+            enemy = 'b'
+        else:
+            enemy = 'w'
+
+        for x_direction in (-1, 1):
+            for y_direction in (-1, 1):
+                r = row + 1 * y_direction
+                c = col + 2 * x_direction
+                if 0 <= r <= 7 and 0 <= c <= 7 and (self.board[r][c][0] == enemy or self.board[r][c] == '--'):
+                    moves.append(Move((row, col), (r, c), self.board))
+
+        for x_direction in (-1, 1):
+            for y_direction in (-1, 1):
+                r = row + 2 * y_direction
+                c = col + 1 * x_direction
+                if 0 <= r <= 7 and 0 <= c <= 7 and (self.board[r][c][0] == enemy or self.board[r][c] == '--'):
+                    moves.append(Move((row, col), (r, c), self.board))
+
+        return moves
+
     def gen_bishop_moves(self, row, col):
         moves = []
         peice_color = self.board[row][col][0]
@@ -166,17 +189,17 @@ class GameState():
             for col_direction in (-1, 1):
                 r = row + 1 * row_direction
                 c = col + 1 * col_direction
-                if 0 <= r < 7 and 0 <= c < 7 and (self.board[r][c][0] == enemy or self.board[r][c] == '--'):
+                if 0 <= r <= 7 and 0 <= c <= 7 and (self.board[r][c][0] == enemy or self.board[r][c] == '--'):
                     moves.append(Move((row, col), (r, c), self.board))
 
         for x_direction in (-1, 1):
             c = col + 1 * x_direction
-            if 0 <= c < 7 and (self.board[row][c][0] == enemy or self.board[row][c] == '--'):
+            if 0 <= c <= 7 and (self.board[row][c][0] == enemy or self.board[row][c] == '--'):
                 moves.append(Move((row, col), (row, c), self.board))
 
         for y_direction in (-1, 1):
             r = row + 1 * y_direction
-            if 0 <= r < 7 and (self.board[r][col][0] == enemy or self.board[r][col] == '--'):
+            if 0 <= r <= 7 and (self.board[r][col][0] == enemy or self.board[r][col] == '--'):
                 moves.append(Move((row, col), (r, col), self.board))
 
 
