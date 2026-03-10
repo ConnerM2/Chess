@@ -70,8 +70,10 @@ def main():
                             if move in legal_moves:
                                 gs.makeMove(move)
                                 moveMade = True
-                            moves = []
-                            sqSelected = ()
+                                moves = []
+                                sqSelected = ()
+                            else: 
+                                moves = [sqSelected]
         if moveMade:
             legal_moves = gs.all_moves()
             for move in legal_moves:
