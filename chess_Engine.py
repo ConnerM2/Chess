@@ -3,17 +3,19 @@
 class GameState():
     def __init__(self):
         self.board = [
-                ['bR', 'bN', 'bB', 'bK', 'bQ', 'bB', 'bN', 'bR'],
+                ['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
                 ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['--', '--', '--', '--', '--', '--', '--', '--'],
                 ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'],
-                ['wR', 'wN', 'wB', 'wK', 'wQ', 'wB', 'wN', 'wR']]
+                ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']]
         
         self.whiteToMove = True
         self.moveHistory = []
+        self.whiteKingLocation = (7,4)
+        self.blackKingLocation = (0,4)
 
         self.gen_move = {
             'p' : self.gen_pawn_moves,
@@ -26,10 +28,49 @@ class GameState():
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = '--'
-        self.board[move.endRow][move.endCol] = move.peice_moved
+        self.board[move.endRow][move.endCol] = move.peiceMoved
         self.moveHistory.append(move)
         self.whiteToMove = not self.whiteToMove
+        if move.peiceMoved == "wK":
+            self.whiteKingLocation = (move.endRow, move.endCol)
+        elif move.peiceMoved == "bK":
+            self.blackKingLocation = (move.endRow, move.endCol)
         #print(self.whiteToMove)
+    
+    def undoMove(self):
+        if len(self.moveHistory) != 0:
+            move = self.moveHistory.pop()
+            self.board[move.startRow][move.startCol] = move.peiceMoved
+            self.board[move.endRow][move.endCol] = move.peice_captured
+            self.whiteToMove = not self.whiteToMove
+
+    def all_legal_moves(self): #sorts through all moves and returns moves that dont put king in danger
+        moves = self.all_moves()
+        for i in range(len(moves) - 1, -1, -1): #When removing elements from a list, go backwards to avoid bugs
+            self.makeMove(moves[i])
+            self.whiteToMove = not self.whiteToMove
+            if self.inCheck():
+                moves.remove(moves[i])
+            self.whiteToMove = not self.whiteToMove
+            self.undoMove()
+
+            
+        return moves
+
+    def inCheck(self):
+        if self.whiteToMove:
+            return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    def squareUnderAttack(self, r, c):
+        self.whiteToMove = not self.whiteToMove
+        oppMoves = self.all_moves()
+        self.whiteToMove = not self.whiteToMove
+        for move in oppMoves:
+            if move.endRow == r and move.endCol == c:
+                return True
+        return False
 
 
     def all_moves(self): #finds every single possible move
@@ -46,10 +87,7 @@ class GameState():
                     possible_moves = self.gen_move[peice](row, col)
                     moves.extend(possible_moves)
 
-        return moves
-
-    def all_legal_moves(self): #sorts through all moves and returns moves that dont put king in danger
-        pass
+        return moves  
 
     def gen_pawn_moves(self, row, col):
         moves = []
@@ -268,7 +306,7 @@ class Move():
         self.startCol = startSQ[1]
         self.endRow = endSQ[0]
         self.endCol = endSQ[1]
-        self.peice_moved = board[self.startRow][self.startCol]
+        self.peiceMoved = board[self.startRow][self.startCol]
         self.peice_captured = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         #print(self.moveID)
@@ -280,4 +318,4 @@ class Move():
         return False
     
     def __str__(self):
-        return f"{self.peice_moved}: ({self.startRow},{self.startCol}) -> {self.peice_captured}: ({self.endRow},{self.endCol})"
+        return f"{self.peiceMoved}: ({self.startRow},{self.startCol}) -> {self.peice_captured}: ({self.endRow},{self.endCol})"

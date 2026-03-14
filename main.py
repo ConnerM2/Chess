@@ -51,6 +51,9 @@ def main():
             if event.type == p.QUIT:
                 p.quit()
                 exit()
+            elif event.type == p.KEYDOWN:
+                if event.key == p.K_z:
+                    gs.undoMove()
             elif event.type == p.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     position = event.pos #Gets position of mouse once clicked, store in position as a tuple
