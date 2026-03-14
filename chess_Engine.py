@@ -16,6 +16,8 @@ class GameState():
         self.moveHistory = []
         self.whiteKingLocation = (7,4)
         self.blackKingLocation = (0,4)
+        self.checkMate = False
+        self.staleMate = False
 
         self.gen_move = {
             'p' : self.gen_pawn_moves,
@@ -43,6 +45,10 @@ class GameState():
             self.board[move.startRow][move.startCol] = move.peiceMoved
             self.board[move.endRow][move.endCol] = move.peice_captured
             self.whiteToMove = not self.whiteToMove
+            if move.peiceMoved == "wK":
+                self.whiteKingLocation = (move.startRow, move.startCol)
+            elif move.peiceMoved == "bK":
+                self.blackKingLocation = (move.startRow, move.startCol)
 
     def all_legal_moves(self): #sorts through all moves and returns moves that dont put king in danger
         moves = self.all_moves()
@@ -53,7 +59,14 @@ class GameState():
                 moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
-
+        if len(moves) == 0: 
+            if self.inCheck():
+                self.checkMate = True
+            else:
+                self.staleMate = True
+        else:
+            self.checkMate = False
+            self.staleMate = False
             
         return moves
 

@@ -42,7 +42,7 @@ def main():
     sqSelected = ()
     moves = []
     moveMade = False
-    legal_moves = gs.all_moves()
+    legal_moves = gs.all_legal_moves()
     for move in legal_moves:
         print(move)
 
@@ -54,6 +54,7 @@ def main():
             elif event.type == p.KEYDOWN:
                 if event.key == p.K_z:
                     gs.undoMove()
+                    moveMade = True
             elif event.type == p.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     position = event.pos #Gets position of mouse once clicked, store in position as a tuple
@@ -78,7 +79,7 @@ def main():
                             else: 
                                 moves = [sqSelected]
         if moveMade:
-            legal_moves = gs.all_moves()
+            legal_moves = gs.all_legal_moves()
             for move in legal_moves:
                 print(move)
             moveMade = False
