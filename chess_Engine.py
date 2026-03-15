@@ -37,7 +37,9 @@ class GameState():
             self.whiteKingLocation = (move.endRow, move.endCol)
         elif move.peiceMoved == "bK":
             self.blackKingLocation = (move.endRow, move.endCol)
-        #print(self.whiteToMove)
+        
+        if move.isPawnPromotion:
+            self.board[move.endRow][move.endCol] = move.peiceMoved[0] + 'Q'
     
     def undoMove(self):
         if len(self.moveHistory) != 0:
@@ -321,6 +323,9 @@ class Move():
         self.endCol = endSQ[1]
         self.peiceMoved = board[self.startRow][self.startCol]
         self.peice_captured = board[self.endRow][self.endCol]
+        self.isPawnPromotion = False
+        if (self.peiceMoved == 'wp' and self.endRow == 0) or (self.peiceMoved == 'bp' and self.endRow == 7):
+            self.isPawnPromotion = True
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         #print(self.moveID)
         #print(self.peice_moved, self.peice_captured)

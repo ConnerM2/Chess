@@ -70,13 +70,14 @@ def main():
                             moves = []
                             sqSelected = ()
                         else:
-                            move = Move(moves[0], moves[1], gs.board) #sends the two squares clicked to backend
-                            if move in legal_moves:
-                                gs.makeMove(move)
-                                moveMade = True
-                                moves = []
-                                sqSelected = ()
-                            else: 
+                            move = Move(moves[0], moves[1], gs.board) 
+                            for i in range(len(legal_moves)): #sends the two squares clicked to backend
+                                if move == legal_moves[i]:
+                                    gs.makeMove(legal_moves[i])
+                                    moveMade = True
+                                    moves = []
+                                    sqSelected = ()
+                            if not moveMade:
                                 moves = [sqSelected]
         if moveMade:
             legal_moves = gs.all_legal_moves()
