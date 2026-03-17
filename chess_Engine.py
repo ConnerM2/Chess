@@ -18,6 +18,7 @@ class GameState():
         self.blackKingLocation = (0,4)
         self.checkMate = False
         self.staleMate = False
+        self.enpassantPossible = ()
 
         self.gen_move = {
             'p' : self.gen_pawn_moves,
@@ -40,12 +41,20 @@ class GameState():
         
         if move.isPawnPromotion:
             self.board[move.endRow][move.endCol] = move.peiceMoved[0] + 'Q'
+
+        if move.isEnpassantMove:
+            self.board[move.startRow][move.endCol] = '--'
+
+        if move.peiceMoved[1] == 'p' and abs(move.endRow-move.startRow) == 2:
+            self.enpassantPossible = ((move.endRow + move.startRow) // 2, move.endCol)
+        else:
+            self.enpassantPossible = ()
     
     def undoMove(self):
         if len(self.moveHistory) != 0:
             move = self.moveHistory.pop()
             self.board[move.startRow][move.startCol] = move.peiceMoved
-            self.board[move.endRow][move.endCol] = move.peice_captured
+            self.board[move.endRow][move.endCol] = move.peiceCaptured
             self.whiteToMove = not self.whiteToMove
             if move.peiceMoved == "wK":
                 self.whiteKingLocation = (move.startRow, move.startCol)
@@ -125,6 +134,8 @@ class GameState():
             if 0 <= r < 8 and 0 <= c < 8:
                 if self.board[r][c][0] == enemy:
                     moves.append(Move((row, col), (r, c), self.board))
+                elif (r, c) == self.enpassantPossible:
+                    moves.append(Move((row, col), (r, c), self.board, isEnpassantMove=True))
                 #check if diagnal square are en pasan
 
         #move forward
@@ -316,16 +327,18 @@ This class is used to store the two most reacent clicks
 Start square; first click. Second square; second click
 '''
 class Move():
-    def __init__(self, startSQ, endSQ, board):
+    def __init__(self, startSQ, endSQ, board, isEnpassantMove = False):
         self.startRow = startSQ[0]
         self.startCol = startSQ[1]
         self.endRow = endSQ[0]
         self.endCol = endSQ[1]
         self.peiceMoved = board[self.startRow][self.startCol]
-        self.peice_captured = board[self.endRow][self.endCol]
+        self.peiceCaptured = board[self.endRow][self.endCol]
         self.isPawnPromotion = False
+        self.isEnpassantMove = False
         if (self.peiceMoved == 'wp' and self.endRow == 0) or (self.peiceMoved == 'bp' and self.endRow == 7):
             self.isPawnPromotion = True
+        self.isEnpassantMove = isEnpassantMove
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         #print(self.moveID)
         #print(self.peice_moved, self.peice_captured)
@@ -336,4 +349,4 @@ class Move():
         return False
     
     def __str__(self):
-        return f"{self.peiceMoved}: ({self.startRow},{self.startCol}) -> {self.peice_captured}: ({self.endRow},{self.endCol})"
+        return f"{self.peiceMoved}: ({self.startRow},{self.startCol}) -> {self.peiceCaptured}: ({self.endRow},{self.endCol})"
