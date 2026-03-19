@@ -60,8 +60,15 @@ class GameState():
                 self.whiteKingLocation = (move.startRow, move.startCol)
             elif move.peiceMoved == "bK":
                 self.blackKingLocation = (move.startRow, move.startCol)
+            if move.isEnpassantMove:
+                self.board[move.endRow][move.endCol] = '--'
+                self.board[move.startRow][move.endCol] = move.peiceCaptured
+                self.enpassantPossible = (move.endRow, move.endCol)
+            if move.peiceMoved[1] == 'p' and abs(move.startRow - move.endRow) == 2:
+                self.enpassantPossible = ()
 
     def all_legal_moves(self): #sorts through all moves and returns moves that dont put king in danger
+        tempEnpassantPossible = self.enpassantPossible
         moves = self.all_moves()
         for i in range(len(moves) - 1, -1, -1): #When removing elements from a list, go backwards to avoid bugs
             self.makeMove(moves[i])
@@ -78,7 +85,8 @@ class GameState():
         else:
             self.checkMate = False
             self.staleMate = False
-            
+        
+        self.enpassantPossible = tempEnpassantPossible
         return moves
 
     def inCheck(self):
@@ -339,6 +347,9 @@ class Move():
         if (self.peiceMoved == 'wp' and self.endRow == 0) or (self.peiceMoved == 'bp' and self.endRow == 7):
             self.isPawnPromotion = True
         self.isEnpassantMove = isEnpassantMove
+        if self.isEnpassantMove:
+            self.peiceCaptured = 'wp' if self.peiceMoved == 'bp' else 'bp'
+
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         #print(self.moveID)
         #print(self.peice_moved, self.peice_captured)
