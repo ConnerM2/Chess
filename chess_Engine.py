@@ -19,6 +19,8 @@ class GameState():
         self.checkMate = False
         self.staleMate = False
         self.enpassantPossible = ()
+        self.currentCastlingRight = CastleRight(True, True, True, True)
+        self.castleRightLog = [self.currentCastlingRight]
 
         self.gen_move = {
             'p' : self.gen_pawn_moves,
@@ -329,6 +331,12 @@ class GameState():
                     break 
         return moves
     
+class CastleRight():
+    def __init__(self, wks, bks, wqs, bqs):
+        self.wks = wks
+        self.bks = bks
+        self.wqs = wqs
+        self.bqs = bqs
 
 '''
 This class is used to store the two most reacent clicks
